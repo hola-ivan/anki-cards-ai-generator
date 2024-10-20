@@ -11,7 +11,7 @@ temperature: float = 0.2
 presence_penalty: float = 0
 frequency_penalty: float = 0.1
 response_number = 1
-model: str = "gpt-4-turbo"
+model: str = "gpt-4o-mini"
 max_tokens: int = 256
 n: int = 1
 
@@ -20,7 +20,7 @@ def chat_generate_audio(word: str) -> str:
     speech_file_path = f"D:/AnkiProject/anki-cards-ai-generator/prototype/get_audio_from_openai/{word}.mp3"
 
     with client.audio.speech.with_streaming_response.create(
-            model="tts-1-hd",
+            model="tts-1",
             voice="nova",
             input=word
     ) as response:

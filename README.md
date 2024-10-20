@@ -117,9 +117,9 @@ An example input file, generated elements and card screenshots can be found in [
 Examples for different language levels can be found in [Levels Demo](demo/different_levels).  
 
 ## OpenAI API
-Text: [gpt-4o](https://platform.openai.com/docs/models/gpt-4o)  
+Text: [gpt-4o-mini](https://platform.openai.com/docs/models/gpt-4o-mini)  
 Image: [dall-e-3](https://platform.openai.com/docs/guides/images/usage), 3 RPM, 200 RPD - main throughput limitation  
-Audio: [tts-1-hd](https://platform.openai.com/docs/guides/text-to-speech)  
+Audio: [tts-1](https://platform.openai.com/docs/guides/text-to-speech)  
 
 ## Replicate API
 Reference image model: [stable-diffusion](https://replicate.com/stability-ai/stable-diffusion)  

@@ -37,7 +37,7 @@ presence_penalty: float = 0
 frequency_penalty: float = 0.1
 response_number = 1
 
-model: str = "gpt-4-turbo"
+model: str = "gpt-4o-mini"
 
 max_tokens: int = 256
 n: int = 1

@@ -14,7 +14,14 @@ def replicate_generate_image(prompt: str) -> str:
 
     replicate_client = replicate.Client(api_token=Config.REPLICATE_API_KEY)
 
+    # This is for low cost, faster generation. Change for higher quality images.
     input = {
+        "aspect_ratio": "3:2",
+        "go_fast": True,
+        "megapixels": "0.25",
+        "num_outputs": 1,
+        "output_format": "png",
+        "output_quality": 100,
         "prompt": prompt
     }
 
