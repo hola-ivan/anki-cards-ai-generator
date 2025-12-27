@@ -1,0 +1,13 @@
+{
+    "name": "anki-cards-ai-generator-root",
+    "version": "1.0.0",
+    "description": "Root package for developer scripts",
+    "scripts": {
+        "dev:frontend": "cd frontend && npm run dev",
+        "dev:backend": "python3 -m uvicorn backend.main:app --reload --port 8000",
+        "setup": "pip install -r backend/requirements.txt && cd frontend && npm install"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

@@ -91,3 +91,24 @@ async def get_status(task_id: str):
         return {"state": "initializing", "progress": 0}
         
     return JSONResponse(status_code=404, content={"error": "Task not found"})
+
+@app.get("/api/tasks/{task_id}/cards")
+async def get_cards(task_id: str):
+    file_path = os.path.join(TASKS_DIR, task_id, "cards.json")
+    if os.path.exists(file_path):
+        with open(file_path, "r") as f:
+             return json.load(f)
+    return JSONResponse(status_code=404, content={"error": "Cards not found"})
+
+@app.get("/api/tasks/{task_id}/media/{filename}")
+async def get_media(task_id: str, filename: str):
+    # Security: ensure no traversal
+    if ".." in filename or "/" in filename:
+         return JSONResponse(status_code=400, content={"error": "Invalid filename"})
+         
+    file_path = os.path.join(TASKS_DIR, task_id, filename) # logic in worker was saving to task_dir directly for simple mock/gen
+    # Wait, generate_cards logic saves to processing_dir aka task_dir.
+    
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    return JSONResponse(status_code=404, content={"error": "File not found"})

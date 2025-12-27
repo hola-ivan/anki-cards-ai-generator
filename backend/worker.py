@@ -12,7 +12,7 @@ sys.path.append(os.getcwd())
 from generator.config import Config
 from generator.entities import WordWithContext, CardRawDataV1
 from generator.input import read_input_file
-from generator import generate_cards
+from generator.input import read_input_file
 from generator.anki import card_formatter
 from generator.anki.genanki_exporter import export_to_apkg
 
@@ -81,6 +81,10 @@ def main():
         img = Image.new('RGB', (300, 300), color = (73, 109, 137))
         img.save(mock_image_path)
         
+        mock_audio_path = os.path.join(args.task_dir, "mock_audio.mp3")
+        with open(mock_audio_path, "wb") as f:
+            f.write(b"mock audio content")
+        
         for w in input_words:
             # Mock card data
             card = CardRawDataV1(
@@ -89,12 +93,13 @@ def main():
                 image_prompt="Mock prompt",
                 image_url="http://mock.url",
                 image_path=mock_image_path,
-                audio_path="", # No audio in mock
+                audio_path=mock_audio_path,
                 dictionary_url=f"http://example.com/dict/{w.word}"
             )
             cards_data[w] = card
     else:
         try:
+            from generator import generate_cards
             cards_data = generate_cards.generate_text_and_image(input_words)
         except Exception as e:
             logging.error(f"Generation failed: {e}")
@@ -162,6 +167,25 @@ def main():
 
     export_to_apkg(args.deck_name, notes, output_file, media_files)
     logging.info(f"Deck created at {output_file}")
+    
+    # Save aggregated cards.json for preview
+    # valid object for preview: list of {word, front, back, image_url (if relative need serving)}
+    preview_data = []
+    # logic to get relative image paths for frontend server or just base64? 
+    # For now, let's just save the fields. 
+    # Images need to be served. We can add a static mount in FastAPI or serve via endpoint.
+    # Simple approach: Return card data with filenames, frontend requests image via new endpoint.
+    
+    for word, card in cards_data.items():
+         preview_data.append({
+             "word": card.word,
+             "text": card.card_text,
+             "image": os.path.basename(card.image_path) if card.image_path else None,
+             "audio": os.path.basename(card.audio_path) if card.audio_path else None
+         })
+         
+    with open(os.path.join(args.task_dir, "cards.json"), "w") as f:
+        json.dump(preview_data, f)
     
     # Write success status
     with open(os.path.join(args.task_dir, "status.json"), "w") as f:
