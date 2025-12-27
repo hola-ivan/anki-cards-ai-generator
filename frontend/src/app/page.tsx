@@ -103,14 +103,23 @@ export default function Home() {
     window.open(`${API_URL}/api/download/${taskId}`, "_blank");
   };
 
-  const tryDemo = () => {
-    setDeckName("Demo: Travel Essentials");
+  const loadSampleData = () => {
+    const sampleCsvContent = `Word;Context
+Serendipity;Finding something good without looking for it
+Petrichor;The pleasant smell of earth after rain
+Ephemeral;Lasting for a very short time
+Luminous;Full of or shedding light
+`;
+    const blob = new Blob([sampleCsvContent], { type: "text/csv" });
+    const file = new File([blob], "demo_words.csv", { type: "text/csv" });
+
+    setFile(file);
+    setDeckName("Demo: Beautiful Words");
     setLanguage("english");
-    setLevel("B1");
-    // We can't easily auto-fill a File object for security reasons,
-    // but we can show a mock state or instructions.
-    // Let's at least pre-fill the metadata.
-    alert("Metadata prefilled! Now just upload your word list CSV to see the magic.");
+    setLevel("C1");
+
+    // Smooth scroll to form
+    document.getElementById('generator-form')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -127,7 +136,7 @@ export default function Home() {
             <a href="/how-it-works" className="text-slate-500 hover:text-blue-600 font-semibold transition-colors">How it works</a>
             <a href="https://github.com/hola-ivan/anki-cards-ai-generator" className="text-slate-500 hover:text-blue-600 font-semibold transition-colors">GitHub</a>
             <button
-              onClick={tryDemo}
+              onClick={loadSampleData}
               className="bg-blue-50 text-blue-600 px-4 py-2 rounded-full font-bold hover:bg-blue-100 transition-all"
             >
               Try Demo
@@ -256,6 +265,9 @@ export default function Home() {
                         />
                       </label>
                       <p className="pl-1">or drag & drop</p>
+                    </div>
+                    <div className="mt-2 text-sm text-slate-500">
+                      No file? <span onClick={loadSampleData} className="text-blue-600 font-bold hover:underline cursor-pointer">Use sample data</span>
                     </div>
                     <p className="text-xs text-slate-400 font-medium tracking-tight">CSV (Format: word;context) • Max 10MB</p>
                     {file && (
