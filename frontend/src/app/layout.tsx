@@ -13,9 +13,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-title: "AnkiGen.ai - AI-Powered Anki Card Generator",
+export const metadata: Metadata = {
+  title: "AnkiGen.ai - AI-Powered Anki Card Generator",
   description: "Generate high-quality Anki cards automatically with AI. Add context, images (AI), and audio to your vocabulary lists in seconds.",
-    keywords: ["Anki", "Spaced Repetition", "AI", "Language Learning", "Flashcards"],
+  keywords: ["Anki", "Spaced Repetition", "AI", "Language Learning", "Flashcards"],
 };
 
 export default function RootLayout({
@@ -37,16 +38,15 @@ export default function RootLayout({
                   "@type": "Question",
                   "name": "How does AnkiGen.ai work?",
                   "text": "AnkiGen.ai uses advanced AI models for context, images, and audio to turn CSV vocabulary lists into rich Anki cards (.apkg)."
-                }
                 },
-              {
-                "@type": "Question",
-                "name": "Is it free to use?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "The tool is open-source. For the cloud version, we offer a demo mode and plan options based on AI API usage."
+                {
+                  "@type": "Question",
+                  "name": "Is it free to use?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The tool is open-source. For the cloud version, we offer a demo mode and plan options based on AI API usage."
+                  }
                 }
-              }
               ]
             })
           }}
