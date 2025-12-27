@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import HeroCardPreview from "@/components/HeroCardPreview";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { languages, Language } from "@/utils/translations";
 
 interface Card {
   word: string;
@@ -10,8 +13,9 @@ interface Card {
 }
 
 export default function Home() {
+  const { t, language: currentLang, setLanguage: setUiLanguage } = useLanguage();
   const [file, setFile] = useState<File | null>(null);
-  const [language, setLanguage] = useState("english");
+  const [targetLanguage, setTargetLanguage] = useState("english");
   const [level, setLevel] = useState("B2");
   const [deckName, setDeckName] = useState("AI Generated Deck");
   const [taskId, setTaskId] = useState<string | null>(null);
@@ -73,7 +77,7 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("language", language);
+    formData.append("language", targetLanguage);
     formData.append("level", level);
     formData.append("deck_name", deckName);
 
@@ -115,7 +119,7 @@ Luminous;Full of or shedding light
 
     setFile(file);
     setDeckName("Demo: Beautiful Words");
-    setLanguage("english");
+    setTargetLanguage("english");
     setLevel("C1");
 
     // Smooth scroll to form
@@ -133,13 +137,13 @@ Luminous;Full of or shedding light
             AnkiGen.ai
           </div>
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="/how-it-works" className="text-slate-500 hover:text-blue-600 font-semibold transition-colors">How it works</a>
-            <a href="https://github.com/hola-ivan/anki-cards-ai-generator" className="text-slate-500 hover:text-blue-600 font-semibold transition-colors">GitHub</a>
+            <a href="/how-it-works" className="text-slate-500 hover:text-blue-600 font-semibold transition-colors">{t('nav.howItWorks')}</a>
+            <a href="https://github.com/hola-ivan/anki-cards-ai-generator" className="text-slate-500 hover:text-blue-600 font-semibold transition-colors">{t('nav.github')}</a>
             <button
               onClick={loadSampleData}
               className="bg-blue-50 text-blue-600 px-4 py-2 rounded-full font-bold hover:bg-blue-100 transition-all"
             >
-              Try Demo
+              {t('nav.tryDemo')}
             </button>
           </nav>
         </div>
@@ -148,41 +152,48 @@ Luminous;Full of or shedding light
       {/* Hero Section */}
       {status === "idle" && (
         <div className="bg-white overflow-hidden pb-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 text-center lg:pt-32">
-            <h1 className="text-5xl font-black tracking-tight text-slate-900 sm:text-7xl mb-6">
-              Master Languages <span className="text-blue-600 italic">Faster</span> with AI
-            </h1>
-            <p className="mt-4 max-w-2xl mx-auto text-xl text-slate-500 leading-relaxed">
-              Transform boring vocabulary lists into vibrant, visual Anki cards in seconds.
-              Powered by <span className="font-bold text-blue-600">GPT-5.1</span> and <span className="font-bold text-blue-600">Flux</span>.
-            </p>
-
-            {/* Steps */}
-            <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto" id="how-it-works">
-              <div className="p-8 bg-blue-50/50 rounded-3xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mb-6 mx-auto shadow-lg shadow-blue-200">1</div>
-                <h3 className="text-xl font-bold mb-3">Upload Words</h3>
-                <p className="text-slate-600">Upload a CSV file with your target words and context.</p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 lg:pt-32">
+            <div className="lg:grid lg:grid-cols-12 lg:gap-8 items-center">
+              <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
+                <h1 className="text-5xl font-black tracking-tight text-slate-900 sm:text-7xl mb-6">
+                  {t('hero.title')} <span className="text-blue-600 italic">{t('hero.titleHighlight')}</span>
+                </h1>
+                <p className="mt-4 text-xl text-slate-500 leading-relaxed">
+                  {t('hero.subtitle')}
+                  <br className="hidden lg:inline" />
+                  <span className="block mt-2">{t('hero.poweredBy')} <span className="font-bold text-blue-600">GPT-4o</span> & <span className="font-bold text-blue-600">Flux</span>.</span>
+                </p>
+                <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
+                  <button
+                    onClick={() => document.getElementById('generator-form')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="px-10 py-5 bg-blue-600 text-white font-black rounded-2xl text-xl shadow-xl shadow-blue-200 hover:bg-blue-700 hover:scale-105 transition-all active:scale-95"
+                  >
+                    {t('hero.start')}
+                  </button>
+                </div>
               </div>
-              <div className="p-8 bg-blue-50/50 rounded-3xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mb-6 mx-auto shadow-lg shadow-blue-200">2</div>
-                <h3 className="text-xl font-bold mb-3">AI Enrichment</h3>
-                <p className="text-slate-600">We generate definitions, Flux images, and Minimax audio.</p>
-              </div>
-              <div className="p-8 bg-blue-50/50 rounded-3xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mb-6 mx-auto shadow-lg shadow-blue-200">3</div>
-                <h3 className="text-xl font-bold mb-3">Flashcard Fun</h3>
-                <p className="text-slate-600">Download your .apkg and start your SRS journey immediately.</p>
+              <div className="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
+                <HeroCardPreview />
               </div>
             </div>
 
-            <div className="mt-16">
-              <button
-                onClick={() => document.getElementById('generator-form')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-10 py-5 bg-blue-600 text-white font-black rounded-2xl text-xl shadow-xl shadow-blue-200 hover:bg-blue-700 hover:scale-105 transition-all active:scale-95"
-              >
-                Start Generating Now
-              </button>
+            {/* Steps */}
+            <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto" id="how-it-works">
+              <div className="p-8 bg-blue-50/50 rounded-3xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow text-center">
+                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mb-6 mx-auto shadow-lg shadow-blue-200">1</div>
+                <h3 className="text-xl font-bold mb-3">{t('step1.title')}</h3>
+                <p className="text-slate-600">{t('step1.desc')}</p>
+              </div>
+              <div className="p-8 bg-blue-50/50 rounded-3xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow text-center">
+                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mb-6 mx-auto shadow-lg shadow-blue-200">2</div>
+                <h3 className="text-xl font-bold mb-3">{t('step2.title')}</h3>
+                <p className="text-slate-600">{t('step2.desc')}</p>
+              </div>
+              <div className="p-8 bg-blue-50/50 rounded-3xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow text-center">
+                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mb-6 mx-auto shadow-lg shadow-blue-200">3</div>
+                <h3 className="text-xl font-bold mb-3">{t('step3.title')}</h3>
+                <p className="text-slate-600">{t('step3.desc')}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -195,7 +206,7 @@ Luminous;Full of or shedding light
         {(status === "idle" || status === "uploading" || status === "error") && (
           <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full border border-slate-100">
             <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-6">
-              <h2 className="text-3xl font-black text-slate-800 tracking-tight">Create Your Deck</h2>
+              <h2 className="text-3xl font-black text-slate-800 tracking-tight">{t('form.title')}</h2>
               <div className="flex space-x-2">
                 <div className="w-3 h-3 rounded-full bg-blue-400"></div>
                 <div className="w-3 h-3 rounded-full bg-blue-200"></div>
@@ -207,10 +218,10 @@ Luminous;Full of or shedding light
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <label className="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">Language</label>
+                  <label className="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">{t('form.language')}</label>
                   <select
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
+                    value={targetLanguage}
+                    onChange={(e) => setTargetLanguage(e.target.value)}
                     className="block w-full rounded-2xl border-slate-200 bg-slate-50 p-4 text-slate-900 focus:border-blue-500 focus:ring-blue-500 font-medium transition-all"
                   >
                     <option value="english">🇺🇸 English</option>
@@ -218,7 +229,7 @@ Luminous;Full of or shedding light
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">Target Level</label>
+                  <label className="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">{t('form.level')}</label>
                   <select
                     value={level}
                     onChange={(e) => setLevel(e.target.value)}
@@ -235,18 +246,18 @@ Luminous;Full of or shedding light
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">Deck Name</label>
+                <label className="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">{t('form.deckName')}</label>
                 <input
                   type="text"
                   className="block w-full rounded-2xl border-slate-200 bg-slate-50 p-4 text-slate-900 focus:border-blue-500 focus:ring-blue-500 font-medium transition-all"
                   value={deckName}
                   onChange={(e) => setDeckName(e.target.value)}
-                  placeholder="e.g. My Travel Vocab"
+                  placeholder={t('form.deckNamePlaceholder')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">Input CSV File</label>
+                <label className="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">{t('form.inputCsv')}</label>
                 <div className="mt-1 flex justify-center px-8 pt-8 pb-10 border-2 border-slate-200 border-dashed rounded-[2rem] hover:bg-blue-50/30 hover:border-blue-300 transition-all group">
                   <div className="space-y-2 text-center">
                     <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
@@ -256,7 +267,7 @@ Luminous;Full of or shedding light
                     </div>
                     <div className="flex text-base text-slate-600 justify-center">
                       <label className="relative cursor-pointer bg-white rounded-md font-bold text-blue-600 hover:text-blue-500 focus-within:outline-none transition-colors">
-                        <span>Upload word list</span>
+                        <span>{t('form.uploadBtn')}</span>
                         <input
                           type="file"
                           className="sr-only"
@@ -264,10 +275,10 @@ Luminous;Full of or shedding light
                           accept=".csv"
                         />
                       </label>
-                      <p className="pl-1">or drag & drop</p>
+                      <p className="pl-1">{t('form.dragDrop')}</p>
                     </div>
                     <div className="mt-2 text-sm text-slate-500">
-                      No file? <span onClick={loadSampleData} className="text-blue-600 font-bold hover:underline cursor-pointer">Use sample data</span>
+                      No file? <span onClick={loadSampleData} className="text-blue-600 font-bold hover:underline cursor-pointer">{t('form.useSample')}</span>
                     </div>
                     <p className="text-xs text-slate-400 font-medium tracking-tight">CSV (Format: word;context) • Max 10MB</p>
                     {file && (
@@ -284,7 +295,7 @@ Luminous;Full of or shedding light
                 disabled={status === "uploading"}
                 className="w-full flex justify-center py-5 px-4 border border-transparent rounded-2xl shadow-xl text-xl font-black text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:bg-slate-300 transition-all transform hover:-translate-y-1 active:translate-y-0"
               >
-                {status === "uploading" ? "Launching AI..." : "✨ Generate My Deck"}
+                {status === "uploading" ? t('form.generating') : t('form.generateBtn')}
               </button>
 
               {error && (
@@ -303,8 +314,8 @@ Luminous;Full of or shedding light
               <div className="absolute inset-0 animate-ping rounded-full h-24 w-24 bg-blue-100 mx-auto"></div>
               <div className="relative animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-blue-600 mx-auto shadow-inner"></div>
             </div>
-            <h2 className="text-3xl font-black text-slate-900 mb-2">AI is Thinking...</h2>
-            <p className="text-slate-500 mb-10 max-w-sm mx-auto font-medium">We are weaving text, Flux images, and Minimax audio into your perfect cards.</p>
+            <h2 className="text-3xl font-black text-slate-900 mb-2">{t('processing.title')}</h2>
+            <p className="text-slate-500 mb-10 max-w-sm mx-auto font-medium">{t('processing.desc')}</p>
             <div className="w-full bg-slate-100 rounded-full h-4 max-w-md mx-auto overflow-hidden">
               <div className="bg-blue-600 h-full rounded-full w-2/3 animate-[shimmer_2s_infinite] bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 bg-[length:200%_100%]"></div>
             </div>
@@ -317,14 +328,14 @@ Luminous;Full of or shedding light
           <div className="space-y-10">
             <div className="bg-emerald-50 p-10 rounded-[3rem] border border-emerald-100 text-center shadow-2xl">
               <span className="text-6xl mb-6 block">🌋</span>
-              <h2 className="text-4xl font-black text-emerald-900 mb-6 tracking-tight">It's Alive!</h2>
+              <h2 className="text-4xl font-black text-emerald-900 mb-6 tracking-tight">{t('completed.title')}</h2>
               <button
                 onClick={handleDownload}
                 className="px-12 py-6 bg-emerald-600 text-white font-black rounded-[2rem] text-2xl shadow-xl shadow-emerald-200 hover:bg-emerald-700 hover:scale-110 transition-all active:scale-95"
               >
-                Download .apkg
+                {t('completed.download')}
               </button>
-              <p className="mt-6 text-emerald-700 font-semibold">Ready to import into Anki Desktop or Mobile.</p>
+              <p className="mt-6 text-emerald-700 font-semibold">{t('completed.desc')}</p>
             </div>
 
             {/* Preview Section */}
@@ -370,13 +381,28 @@ Luminous;Full of or shedding light
           <div className="flex flex-col md:flex-row justify-between items-center border-b border-slate-800 pb-10 mb-10">
             <div className="text-2xl font-black text-white mb-6 md:mb-0 tracking-tighter">AnkiGen.ai</div>
             <div className="flex space-x-6">
-              <a href="/how-it-works" className="hover:text-blue-400 font-bold transition-colors">Documentation</a>
-              <a href="https://github.com/hola-ivan/anki-cards-ai-generator" className="hover:text-blue-400 font-bold transition-colors">GitHub</a>
+              <a href="/how-it-works" className="hover:text-blue-400 font-bold transition-colors">{t('nav.howItWorks')}</a>
+              <a href="https://github.com/hola-ivan/anki-cards-ai-generator" className="hover:text-blue-400 font-bold transition-colors">{t('nav.github')}</a>
             </div>
           </div>
           <div className="text-center text-xs font-bold uppercase tracking-[0.2em] flex flex-col items-center">
             <div>&copy; 2025 AnkiGen.ai • v1.1.0</div>
-            <div className="mt-2 text-slate-600">Built with Love for Lang Learners</div>
+            <div className="mt-2 text-slate-600">{t('footer.builtWith')}</div>
+
+            <div className="mt-8 flex items-center space-x-2">
+              <span className="text-slate-500">{t('footer.yourLanguage')}:</span>
+              <select
+                value={currentLang}
+                onChange={(e) => setUiLanguage(e.target.value as Language)}
+                className="bg-slate-800 text-slate-300 border-none rounded-lg text-xs font-bold uppercase tracking-wider py-1 pl-2 pr-6 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              >
+                {Object.entries(languages).map(([code, name]) => (
+                  <option key={code} value={code}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </footer>
