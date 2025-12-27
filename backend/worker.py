@@ -37,6 +37,11 @@ def main():
     Config.set_language_or_use_default(args.language)
     Config.set_level_or_use_default(args.level)
     
+    # Initialize modes and keys
+    Config.set_image_generation_mode_or_use_default(os.environ.get("IMAGE_GENERATION_MODE"))
+    Config.set_audio_generation_mode_or_use_default(os.environ.get("AUDIO_GENERATION_MODE"))
+    Config.setup_fal_key_if_needed()
+    
     if not args.mock:
         if not args.openai_key:
              logging.error("OpenAI key required unless in --mock mode")

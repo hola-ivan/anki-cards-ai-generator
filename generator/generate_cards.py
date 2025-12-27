@@ -1,7 +1,7 @@
 import logging
 import time
 
-from generator.api_calls import openai_image, openai_text, openai_audio, openai_image_prompt, replicate_image
+from generator.api_calls import openai_image, openai_text, openai_audio, openai_image_prompt, replicate_image, fal_image, fal_audio
 from generator.dictionaries import dictionaries
 from generator.config import Config, OPENAI, REPLICATE
 from generator.entities import WordWithContext, CardRawDataV1, serialize_to_json
@@ -48,7 +48,7 @@ def create_card_for_word(word_with_context) -> CardRawDataV1:
     logging.info(f"Card image is saved as [{image_path}]")
 
     audio_path = generate_audio_path(Config.PROCESSING_DIRECTORY_PATH, word_with_context)
-    openai_audio.chat_generate_and_save_audio(word_with_context.word, audio_path)
+    generate_audio_depending_on_mode(word_with_context.word, audio_path)
     logging.info(f"Card audio is saved as [{audio_path}]")
 
     dictionary_url = dictionaries.create_dictionary_url_if_website_exists(word_with_context.word)
@@ -72,6 +72,8 @@ def get_image_url_depending_on_image_generation_mode(image_prompt):
         return openai_image.chat_generate_image(image_prompt)
     elif Config.IMAGE_GENERATION_MODE == REPLICATE:
         return replicate_image.replicate_generate_image(image_prompt)
+    elif Config.IMAGE_GENERATION_MODE == Config.FAL:
+        return fal_image.fal_generate_image(image_prompt)
     else:
         raise Exception(f"Unsupported image generation mode: [{Config.IMAGE_GENERATION_MODE}]")
 
@@ -80,3 +82,12 @@ def wait_after_word_processing():
     sleep_seconds = Config.SECONDS_WAIT_BETWEEN_DALLE_CALLS
     logging.info(f"Waiting [{sleep_seconds}] seconds after word processing (API RPM)")
     time.sleep(sleep_seconds)
+
+
+def generate_audio_depending_on_mode(word: str, audio_path: str):
+    if Config.AUDIO_GENERATION_MODE == Config.OPENAI:
+        openai_audio.chat_generate_and_save_audio(word, audio_path)
+    elif Config.AUDIO_GENERATION_MODE == Config.FAL:
+        fal_audio.fal_generate_and_save_audio(word, audio_path)
+    else:
+        raise Exception(f"Unsupported audio generation mode: [{Config.AUDIO_GENERATION_MODE}]")

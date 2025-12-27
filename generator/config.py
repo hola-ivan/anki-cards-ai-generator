@@ -17,6 +17,7 @@ C2 = "C2"
 
 OPENAI = "openai"
 REPLICATE = "replicate"
+FAL = "fal"
 
 
 class Config:
@@ -40,12 +41,18 @@ class Config:
     DEFAULT_CARD_MODEL: str = "Basic (type in the answer)"
     CARD_MODEL: str = None
 
-    SUPPORTED_IMAGE_GENERATION_MODES = [OPENAI, REPLICATE]
-    DEFAULT_IMAGE_GENERATION_MODE = OPENAI
+    SUPPORTED_IMAGE_GENERATION_MODES = [OPENAI, REPLICATE, FAL]
+    DEFAULT_IMAGE_GENERATION_MODE = os.environ.get("IMAGE_GENERATION_MODE", OPENAI).lower()
     IMAGE_GENERATION_MODE: str = None
+
+    SUPPORTED_AUDIO_GENERATION_MODES = [OPENAI, FAL]
+    DEFAULT_AUDIO_GENERATION_MODE = os.environ.get("AUDIO_GENERATION_MODE", OPENAI).lower()
+    AUDIO_GENERATION_MODE: str = None
 
     REPLICATE_API_KEY: str = None
     REPLICATE_MODEL_URL: str = None
+
+    FAL_KEY: str = None
 
 
     @classmethod
@@ -177,5 +184,26 @@ class Config:
                 else:
                     cls.REPLICATE_API_KEY = replicate_api_key_env
             logging.info(f"Replicate API key initialized")
+
+    @classmethod
+    def set_audio_generation_mode_or_use_default(cls, audio_generation_mode):
+        if audio_generation_mode is None:
+            cls.AUDIO_GENERATION_MODE = cls.DEFAULT_AUDIO_GENERATION_MODE
+        elif audio_generation_mode.lower() in cls.SUPPORTED_AUDIO_GENERATION_MODES:
+            cls.AUDIO_GENERATION_MODE = audio_generation_mode.lower()
+        else:
+            # Fallback to OPENAI if unknown, or raise error. Let's raise error for consistency.
+            raise Exception(f"Audio generation mode [{audio_generation_mode}] not supported. Supported modes: {cls.SUPPORTED_AUDIO_GENERATION_MODES}")
+        logging.info(f"Audio generation mode set to [{cls.AUDIO_GENERATION_MODE}]")
+
+    @classmethod
+    def setup_fal_key_if_needed(cls):
+        # We need FAL key if either image or audio mode uses FAL
+        if cls.IMAGE_GENERATION_MODE == FAL or cls.AUDIO_GENERATION_MODE == FAL:
+            fal_key = os.environ.get("FAL_KEY")
+            if fal_key is None:
+                raise EnvironmentError("FAL_KEY environment variable is not set, but FAL mode is selected.")
+            cls.FAL_KEY = fal_key
+            logging.info("FAL_KEY set from environment variable")
 
 
