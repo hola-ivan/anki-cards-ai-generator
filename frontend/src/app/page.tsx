@@ -22,11 +22,12 @@ export default function Home() {
   // Status polling effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
     if (taskId && (status === "processing" || status === "initializing" || status === "uploading")) {
       interval = setInterval(async () => {
         try {
-          const res = await fetch(`http://localhost:8000/api/status/${taskId}`);
+          const res = await fetch(`${API_URL}/api/status/${taskId}`);
           if (res.ok) {
             const data = await res.json();
             if (data.state === "completed") {
@@ -43,7 +44,7 @@ export default function Home() {
     }
 
     if (taskId && status === "fetching_preview") {
-      fetch(`http://localhost:8000/api/tasks/${taskId}/cards`)
+      fetch(`${API_URL}/api/tasks/${taskId}/cards`)
         .then(res => res.json())
         .then(data => {
           setCards(data);
@@ -61,6 +62,8 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
     if (!file) {
       alert("Please provide a file");
       return;
@@ -75,7 +78,7 @@ export default function Home() {
     formData.append("deck_name", deckName);
 
     try {
-      const res = await fetch("http://localhost:8000/api/generate", {
+      const res = await fetch(`${API_URL}/api/generate`, {
         method: "POST",
         body: formData,
       });
@@ -96,7 +99,8 @@ export default function Home() {
 
   const handleDownload = async () => {
     if (!taskId) return;
-    window.open(`http://localhost:8000/api/download/${taskId}`, "_blank");
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    window.open(`${API_URL}/api/download/${taskId}`, "_blank");
   };
 
   return (
@@ -291,7 +295,7 @@ export default function Home() {
                         <div className="h-48 bg-gray-100 w-full relative">
                           {/* We fetch image from backend media endpoint */}
                           <img
-                            src={`http://localhost:8000/api/tasks/${taskId}/media/${card.image}`}
+                            src={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/tasks/${taskId}/media/${card.image}`}
                             alt={card.word}
                             className="w-full h-full object-cover"
                           />

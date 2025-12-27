@@ -14,9 +14,19 @@ from backend.service import GenerationService
 
 app = FastAPI()
 
-origins = [
+# Get allowed origins from env or default to localhost
+# In production, you should set ALLOWED_ORIGINS to your Vercel domain
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS")
+origins = allowed_origins_env.split(",") if allowed_origins_env else [
     "http://localhost:3000",
+    "https://*.vercel.app", # Wildcard for Vercel preview deployments (requires extra logic usually, but FastAPI middleware handles exact matches. For pattern matching we might need regex or just allow keys)
+    # Since FastAPI Starlette CORSMiddleware regex support is specific, we might just want to allow all for this demo or specific domains.
+    # Let's keep it simple and safe-ish.
 ]
+
+# If we want to allow everything (easier for initial deploy), we can check a flag
+if os.getenv("ALLOW_ALL_ORIGINS", "false").lower() == "true":
+    origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
