@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-multipart
+genanki
+# Existing dependencies
+# Copying from root requirements.txt (simplified for now, ideally we merge them)
+openai
+pandas
+requests
+python-dotenv
+replicate
