@@ -45,15 +45,15 @@ export default function HowItWorks() {
                         </p>
                         <ul className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <li className="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
-                                <div className="font-black text-slate-900 mb-2">Text (GPT-5.1)</div>
+                                <div className="font-black text-slate-900 mb-2">Text (AI)</div>
                                 <p className="text-sm text-slate-500 italic">Analyzes words to generate precise, level-appropriate explanations and sample sentences.</p>
                             </li>
                             <li className="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
-                                <div className="font-black text-slate-900 mb-2">Visuals (Flux)</div>
+                                <div className="font-black text-slate-900 mb-2">Visuals (AI)</div>
                                 <p className="text-sm text-slate-500 italic">Creates unique, high-fidelity square images to provide a visual anchor for memory (Mnemonic).</p>
                             </li>
                             <li className="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
-                                <div className="font-black text-slate-900 mb-2">Audio (Minimax)</div>
+                                <div className="font-black text-slate-900 mb-2">Audio (AI)</div>
                                 <p className="text-sm text-slate-500 italic">Synthesizes natural-sounding speech for the target word to ensure you master the pronunciation.</p>
                             </li>
                         </ul>

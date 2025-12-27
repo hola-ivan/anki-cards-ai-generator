@@ -13,10 +13,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "AnkiGen.ai - AI-Powered Anki Card Generator",
-  description: "Generate high-quality Anki cards automatically with AI. Add context, images (Flux), and audio (Minimax) to your vocabulary lists in seconds.",
-  keywords: ["Anki", "Spaced Repetition", "AI", "Language Learning", "Flashcards", "GPT-5", "Flux"],
+title: "AnkiGen.ai - AI-Powered Anki Card Generator",
+  description: "Generate high-quality Anki cards automatically with AI. Add context, images (AI), and audio to your vocabulary lists in seconds.",
+    keywords: ["Anki", "Spaced Repetition", "AI", "Language Learning", "Flashcards"],
 };
 
 export default function RootLayout({
@@ -37,19 +36,17 @@ export default function RootLayout({
                 {
                   "@type": "Question",
                   "name": "How does AnkiGen.ai work?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "AnkiGen.ai uses advanced AI models like GPT-5.1 for context, Fal.ai Flux for images, and Minimax for audio to turn CSV vocabulary lists into rich Anki cards (.apkg)."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Is it free to use?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "The tool is open-source. For the cloud version, we offer a demo mode and plan options based on AI API usage."
-                  }
+                  "text": "AnkiGen.ai uses advanced AI models for context, images, and audio to turn CSV vocabulary lists into rich Anki cards (.apkg)."
                 }
+                },
+              {
+                "@type": "Question",
+                "name": "Is it free to use?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The tool is open-source. For the cloud version, we offer a demo mode and plan options based on AI API usage."
+                }
+              }
               ]
             })
           }}

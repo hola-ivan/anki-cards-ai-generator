@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import HeroCardPreview from "@/components/HeroCardPreview";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { languages, Language } from "@/utils/translations";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 interface Card {
   word: string;
@@ -81,9 +82,21 @@ export default function Home() {
     formData.append("level", level);
     formData.append("deck_name", deckName);
 
+    const supabase = createClientComponentClient();
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      alert("Please login to generate decks!");
+      window.location.href = "/login";
+      return;
+    }
+
     try {
       const res = await fetch(`${API_URL}/api/generate`, {
         method: "POST",
+        headers: {
+          "Authorization": `Bearer ${session.access_token}`,
+        },
         body: formData,
       });
 
@@ -161,7 +174,7 @@ Luminous;Full of or shedding light
                 <p className="mt-4 text-xl text-slate-500 leading-relaxed">
                   {t('hero.subtitle')}
                   <br className="hidden lg:inline" />
-                  <span className="block mt-2">{t('hero.poweredBy')} <span className="font-bold text-blue-600">GPT-4o</span> & <span className="font-bold text-blue-600">Flux</span>.</span>
+                  <span className="block mt-2">{t('hero.poweredBy')} <span className="font-bold text-blue-600">Advanced AI</span>.</span>
                 </p>
                 <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
                   <button
